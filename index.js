@@ -3,12 +3,19 @@ const express = require("express")
 const app = express()
 const PORT = process.env.PORT || 3000
 
+//require the dotenv
+require('dotenv').config()
+
 //import json so can access req.body
 app.use(express.json())
 
 //import functions and the database
 const { generateID } = require("./functions")
 let { list } = require("./database")
+
+//import fetch function
+const fetch = require("node-fetch")
+const axios = require("axios")
 
 //listen
 app.listen(PORT, () => {
@@ -22,22 +29,55 @@ app.get("/destinations", (req, res) => {
 
 //add data
 app.post("/destination", (req, res) => {
-      const { id, destination, location, url, description } = req.body
-
-      //add item to array as long as user input a valid destination and a location
+      const { id, destination, location, description } = req.body
 
       if (destination === "" || destination === undefined || location === "" || location === undefined) {
             return res.status(400).json({ error: "Must input a destination and location" })
       }
-      list.push({
-            id: generateID(),
-            destination: destination,
-            location: location,
-            url: url,
-            description: description
+
+      //add item to array as long as user input a valid destination and a location
+      const url = `https://api.unsplash.com/search/photos?client_id=${process.env.idKey}&query=${destination} ${location}`;
+
+
+      //the node-fetch way
+      // fetch(url).then((response) => response.json()).then((picture) => {
+
+      //       let array = picture.results
+
+      //       const randomIndex = (Math.floor(Math.random() * array.length))
+      //       const randomPhotoUrl = array[randomIndex].urls.regular
+
+      //       list.push({
+      //             id: generateID(),
+      //             destination: destination,
+      //             location: location,
+      //             url: randomPhotoUrl,
+      //             description: description
+      //       })
+
+      //       res.send(`Added to the list!`)
+      // })
+
+      //the axios way
+      //axios.get(url).then((picture) => {
+      //picture.data
+      axios.get(url).then(({ data }) => {
+
+            let array = data.results
+            const randomIndex = (Math.floor(Math.random() * array.length))
+            const randomPhotoUrl = array[randomIndex].urls.regular
+
+            list.push({
+                  id: generateID(),
+                  destination: destination,
+                  location: location,
+                  url: randomPhotoUrl,
+                  description: description
+            })
+
+            res.send(`Added to the list!`)
       })
 
-      res.send(`Added to the list!`)
 })
 
 //delete data using an id
@@ -58,54 +98,43 @@ app.delete("/destination/:id", (req, res) => {
       res.send(`Item id:${id} is deleted`)
 })
 
-//THIS IS THE WRONG WAY TO UPDATE!
-//update data. using an id, update its destination, location, url, and description
-// app.put("/destination/:id/:destination/:location/:url/:description", (req, res) => {
-
-//       const { id, destination, location, url, description } = req.params
-
-//       //look for the id in the array using a loop
-//       for (let i = 0; i < list.length; i++) {
-//             const listItem = list[i]
-//             if (listItem.id == id) {
-//                   //i wonder if i can deconstructure this
-//                   listItem.destination = destination;
-//                   listItem.location = location;
-//                   listItem.url = url;
-//                   listItem.description = description;
-//                   //so we dont keep looking at the array because
-//                   //we can only modify one at a time. for now
-//                   break;
-//             }
-//       }
-
-//       res.send(`Item id:${id} is updated!`)
-// })
-
 //working on update on class
 app.put("/destination/:id", (req, res) => {
       const { id } = req.params
-      const { destination, location, url, description } = req.body
+      const { destination, location, description } = req.body
 
-      if (!destination && !location && !url && !description) {
+      if (!destination && !location && !description) {
             return res.status(400).json({ error: "Must update at least one property" })
       }
 
-      //trying the fancy loop
-      for (let item of list) {
+      const url = `https://api.unsplash.com/search/photos?client_id=hlKxc2FU2gi-xIya9DZXnOjxfV1zNk9DE36J1lILiAc&query=${destination} ${location}`;
 
-            if (item.id == id) {
-                  //update given destination, locaiton, url, description
-                  if (destination) item.destination = destination
-                  if (location) item.location = location
-                  if (url) item.url = url
-                  if (description) item.description = description
-                  //break out of the loop because we're only updating one
-                  break
+      axios.get(url).then((picture) => {
+
+            let array = picture.data.results
+
+            const randomIndex = Math.floor(Math.random() * array.length)
+            const randomImage = array[randomIndex].urls.regular
+
+
+            //trying the fancy loop
+            for (let item of list) {
+
+                  if (item.id == id) {
+                        //update given destination, locaiton, url, description
+                        if (destination) item.destination = destination
+                        if (location) item.location = location
+                        if (url) item.url = randomImage
+                        if (description) item.description = description
+                        //break out of the loop because we're only updating one
+                        break
+                  }
             }
-      }
 
-      res.send(`Item id:${id} is updated!`)
+            res.send(`Item id:${id} is updated!`)
+      })
+
+
 
 })
 
