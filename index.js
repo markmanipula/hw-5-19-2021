@@ -9,6 +9,7 @@ require('dotenv').config()
 //import json so can access req.body
 app.use(express.json())
 //import cors so no error in browswer
+const cors = require("cors")
 app.use(cors())
 
 //import functions and the database
