@@ -65,7 +65,16 @@ app.put("/destination/:id/:destination/:location/:url/:description", (req, res) 
 
       //look for the id in the array using a loop
       for (let i = 0; i < list.length; i++) {
-
+            if (list[i].id == id) {
+                  //i wonder if i can deconstructure this
+                  list[i].destination = destination;
+                  list[i].location = location;
+                  list[i].url = url;
+                  list[i].description = description;
+                  //so we dont keep looking at the array because
+                  //we can only modify one at a time. for now
+                  break;
+            }
       }
 
       res.send(`Item id:${id} is updated!`)
