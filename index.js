@@ -1,7 +1,7 @@
 //import express
 const express = require("express")
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 //import json so can access req.body
 app.use(express.json())
