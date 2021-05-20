@@ -107,7 +107,7 @@ app.put("/destination/:id", (req, res) => {
             return res.status(400).json({ error: "Must update at least one property" })
       }
 
-      const url = `https://api.unsplash.com/search/photos?client_id=hlKxc2FU2gi-xIya9DZXnOjxfV1zNk9DE36J1lILiAc&query=${destination} ${location}`;
+      const url = `https://api.unsplash.com/search/photos?client_id=${process.env.idKey}&query=${destination} ${location}`;
 
       axios.get(url).then((picture) => {
 
