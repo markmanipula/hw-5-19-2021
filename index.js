@@ -16,9 +16,6 @@ app.use(cors())
 const { generateID } = require("./functions")
 let { list } = require("./database")
 
-//import cors so no error in browswer
-app.use(cors())
-
 //import fetch function
 const fetch = require("node-fetch")
 const axios = require("axios")
