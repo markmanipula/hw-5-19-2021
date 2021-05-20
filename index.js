@@ -8,10 +8,15 @@ require('dotenv').config()
 
 //import json so can access req.body
 app.use(express.json())
+//import cors so no error in browswer
+app.use(cors())
 
 //import functions and the database
 const { generateID } = require("./functions")
 let { list } = require("./database")
+
+//import cors so no error in browswer
+app.use(cors())
 
 //import fetch function
 const fetch = require("node-fetch")
