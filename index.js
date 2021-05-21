@@ -33,7 +33,7 @@ app.get("/destinations", (req, res) => {
 
 //add data
 app.post("/destination", (req, res) => {
-      const { id, destination, location, description } = req.body
+      const { destination, location, description } = req.body
 
       if (destination === "" || destination === undefined || location === "" || location === undefined) {
             return res.status(400).json({ error: "Must input a destination and location" })
@@ -79,7 +79,7 @@ app.post("/destination", (req, res) => {
                   description: description
             })
 
-            res.send(`Added to the list!`)
+            res.send({ status: `Added to the list!` })
       })
 
 })
