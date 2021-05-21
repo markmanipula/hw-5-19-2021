@@ -120,7 +120,6 @@ app.put("/destination/:id", (req, res) => {
             const randomIndex = Math.floor(Math.random() * array.length)
             const randomImage = array[randomIndex].urls.regular
 
-
             //trying the fancy loop
             for (let item of list) {
 
