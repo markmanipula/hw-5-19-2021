@@ -11,6 +11,7 @@ require('dotenv').config()
 
 //import json so can access req.body
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
 //import functions and the database
@@ -134,7 +135,7 @@ app.put("/destination/:id", (req, res) => {
                   }
             }
 
-            res.send(`Item id:${id} is updated!`)
+            res.send({ status: `Item id:${id} is updated!` })
       })
 
 
